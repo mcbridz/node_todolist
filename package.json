@@ -99,7 +99,6 @@
     "spdx-expression-parse": "^3.0.1",
     "spdx-license-ids": "^3.0.7",
     "sprintf-js": "^1.0.3",
-    "standard": "^16.0.3",
     "string-width": "^3.1.0",
     "string.prototype.trimend": "^1.0.4",
     "string.prototype.trimstart": "^1.0.4",
