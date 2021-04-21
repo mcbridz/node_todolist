@@ -21,6 +21,7 @@ let body = document.querySelector('body')
 
 
 
+body.onload = spa.setEmpty()
 let submit = document.querySelector('#submit')
-submit.onclick = () => function () { spa.newTodo(spa.display_todos()) }
+submit.onclick = () => spa.newTodo(spa.display_todos)
 body.onload = spa.display_todos()

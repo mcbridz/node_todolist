@@ -1,3 +1,7 @@
+function setEmpty() {
+    let todo_store = document.querySelector('#todosJSON')
+    todo_store.innerText = JSON.stringify([])
+}
 function mark_complete(index) {
     return () => {
         let todo_store = document.querySelector('#todosJSON')
@@ -56,6 +60,7 @@ function newTodo(callback) {
     let priority = document.querySelector('#input_priority').value
     let date = new Date()
     date = `${(date.getMonth() + 1).toString()}/${date.getDate().toString()}/${(date.getFullYear() % 2000).toString()}`
+    console.log(todosJSON)
     todosJSON.push({
         'todo': todo,
         'priority': priority,
@@ -66,12 +71,4 @@ function newTodo(callback) {
     todo_store.innerText = JSON.stringify(todosJSON)
     callback()
 }
-let data = [
-    // {
-    // 'todo': 'abc',
-    // 'priority': 'low',
-    // 'dateAdded': '4/21/21',
-    // 'completed': false
-    // }
-]
-module.exports = { data, newTodo, display_todos, mark_complete }
+module.exports = { setEmpty, newTodo, display_todos, mark_complete }

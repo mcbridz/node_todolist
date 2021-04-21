@@ -6,6 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To-Do List</title>
+    <style>
+        #todo_items>div,
+        #column_labels {
+            display: flex;
+            flex-grow: 1;
+            justify-content: space-evenly;
+        }
+    </style>
 </head>
 
 <body>
@@ -20,7 +28,13 @@
     <button onlick="spa.newTodo(spa.display_todos)" id="submit" type="submit">Enter New ToDo Item</button>
     <hr>
     <h3>To-Do Items...</h3>
-    <p hidden id="todosJSON">""</p>
+    <p hidden id="todosJSON">"[]"</p>
+    <div id="column_labels">
+        <span>To-Do Item</span>
+        <span>Priority</span>
+        <span>Date Added</span>
+        <span></span>
+    </div>
     <div id="todo_items">
 
     </div>
