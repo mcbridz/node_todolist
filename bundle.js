@@ -2,7 +2,7 @@
 //set event listenters that use functions for things
 //start by setting up on-site load of existing todos
 const spa = require('./utils/spa')
-
+let filter_status = { 'completed': false, 'incompleted': false }
 let todo_items = document.querySelector("#todo_items")
 let body = document.querySelector('body')
 // function getTodos() {
@@ -25,6 +25,26 @@ let body = document.querySelector('body')
 body.onload = spa.setEmpty()
 let submit = document.querySelector('#submit')
 submit.onclick = () => spa.newTodo(spa.display_todos)
+let filter_out_completed = document.querySelector('#filter_out_completed')
+filter_out_completed.onclick = () => {
+    if (!filter_status.completed) {
+        filter_status.completed = true
+        return spa.filter_out_completed(spa.display_todos)
+    } else {
+        filter_status.completed = false
+        return spa.unfilter_completed(spa.display_todos)
+    }
+}
+let filter_out_incompleted = document.querySelector('#filter_out_incompleted')
+filter_out_incompleted.onclick = (filter_status) => {
+    if (!filter_status.incompleted) {
+        filter_status.incompleted = true
+        return spa.filter_out_incompleted(spa.display_todos)
+    } else {
+        filter_status.incompleted = false
+        return spa.unfilter_incompleted(spa.display_todos)
+    }
+}
 body.onload = spa.display_todos()
 },{"./utils/spa":2}],2:[function(require,module,exports){
 function setEmpty() {
@@ -37,10 +57,10 @@ function mark_complete(index) {
         let todosJSON = JSON.parse(todo_store.innerText)
         if (todosJSON[index].completed) {
             todosJSON[index].completed = false
-            todosJSON[index].completed_str = "false"
+            todosJSON[index].completed_str = "False"
         } else {
             todosJSON[index].completed = true
-            todosJSON[index].completed_str = "true"
+            todosJSON[index].completed_str = "True"
         }
         todo_store.innerText = JSON.stringify(todosJSON)
         display_todos()
@@ -53,32 +73,35 @@ function display_todos() {
     console.log("current data is:")
     console.log(todosJSON)
     for (let i = 0; i < todosJSON.length; ++i) {
-        let newDiv = document.createElement("div")
-        newDiv.id = `todo${i}`
-        let newTodo = {
-            'todo': todosJSON[i].todo,
-            'priority': todosJSON[i].priority,
-            'dateAdded': todosJSON[i].dateAdded,
-            'completed': todosJSON[i].completed,
-            'completed_str': todosJSON[i].completed_str
+        if (!todosJSON[i].filtered) {
+            let newDiv = document.createElement("div")
+            newDiv.id = `todo${i}`
+            let newTodo = {
+                'todo': todosJSON[i].todo,
+                'priority': todosJSON[i].priority,
+                'dateAdded': todosJSON[i].dateAdded,
+                'completed': todosJSON[i].completed,
+                'completed_str': todosJSON[i].completed_str,
+                'filtered': todosJSON[i].filtered
+            }
+            let todo_span = document.createElement("span")
+            let priority_span = document.createElement("span")
+            let date_span = document.createElement("span")
+            let completed_span = document.createElement("span")
+            let completed_btn = document.createElement("button")
+            todo_span.innerText = newTodo.todo
+            priority_span.innerText = newTodo.priority
+            date_span.innerText = newTodo.dateAdded
+            completed_span.innerText = newTodo.completed_str
+            completed_btn.innerText = "Mark (un)complete"
+            completed_btn.onclick = mark_complete(i)
+            newDiv.appendChild(todo_span)
+            newDiv.appendChild(priority_span)
+            newDiv.appendChild(date_span)
+            newDiv.appendChild(completed_span)
+            newDiv.appendChild(completed_btn)
+            todo_items.appendChild(newDiv)
         }
-        let todo_span = document.createElement("span")
-        let priority_span = document.createElement("span")
-        let date_span = document.createElement("span")
-        let completed_span = document.createElement("span")
-        let completed_btn = document.createElement("button")
-        todo_span.innerText = newTodo.todo
-        priority_span.innerText = newTodo.priority
-        date_span.innerText = newTodo.dateAdded
-        completed_span.innerText = newTodo.completed_str
-        completed_btn.innerText = "Mark (un)complete"
-        completed_btn.onclick = mark_complete(i)
-        newDiv.appendChild(todo_span)
-        newDiv.appendChild(priority_span)
-        newDiv.appendChild(date_span)
-        newDiv.appendChild(completed_span)
-        newDiv.appendChild(completed_btn)
-        todo_items.appendChild(newDiv)
     }
 }
 function newTodo(callback) {
@@ -95,10 +118,57 @@ function newTodo(callback) {
         'priority': priority,
         'dateAdded': date,
         'completed_str': 'False',
-        'completed': false
+        'completed': false,
+        'filtered': false
     })
     todo_store.innerText = JSON.stringify(todosJSON)
     callback()
 }
-module.exports = { setEmpty, newTodo, display_todos, mark_complete }
+function filter_out_completed(callback) {
+    let todo_store = document.querySelector('#todosJSON')
+    let todosJSON = JSON.parse(todo_store.innerText)
+    for (let i = 0; i < todosJSON.length; ++i) {
+        if (todosJSON[i].completed) {
+            todosJSON[i].filtered = true
+        }
+    }
+    todo_store.innerText = JSON.stringify(todosJSON)
+    callback()
+}
+function unfilter_completed(callback) {
+    let todo_store = document.querySelector('#todosJSON')
+    let todosJSON = JSON.parse(todo_store.innerText)
+    for (let i = 0; i < todosJSON.length; ++i) {
+        if (!todosJSON[i].completed) {
+            todosJSON[i].filtered = false
+        }
+    }
+    todo_store.innerText = JSON.stringify(todosJSON)
+    callback()
+}
+function filter_out_incompleted(callback) {
+    let todo_store = document.querySelector('#todosJSON')
+    let todosJSON = JSON.parse(todo_store.innerText)
+    for (let i = 0; i < todosJSON.length; ++i) {
+        if (!todosJSON[i].completed) {
+            todosJSON[i].filtered = true
+        }
+    }
+    todo_store.innerText = JSON.stringify(todosJSON)
+    callback()
+
+}
+function unfilter_incompleted(callback) {
+    let todo_store = document.querySelector('#todosJSON')
+    let todosJSON = JSON.parse(todo_store.innerText)
+    for (let i = 0; i < todosJSON.length; ++i) {
+        if (todosJSON[i].completed) {
+            todosJSON[i].filtered = false
+        }
+    }
+    todo_store.innerText = JSON.stringify(todosJSON)
+    callback()
+
+}
+module.exports = { filter_out_completed, unfilter_completed, filter_out_incompleted, unfilter_incompleted, setEmpty, newTodo, display_todos, mark_complete }
 },{}]},{},[1]);

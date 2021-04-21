@@ -25,15 +25,18 @@
         <option value="standard">Standard</option>
         <option value="high">High</option>
     </select>
-    <button onlick="spa.newTodo(spa.display_todos)" id="submit" type="submit">Enter New ToDo Item</button>
+    <button id="submit" type="submit">Enter New ToDo Item</button>
+    <button id="filter_out_completed">(un)Hide Completed</button>
+    <button id="filter_out_incompleted">(un)Hide Incompleted</button>
     <hr>
     <h3>To-Do Items...</h3>
     <p hidden id="todosJSON">"[]"</p>
     <div id="column_labels">
-        <span>To-Do Item</span>
-        <span>Priority</span>
-        <span>Date Added</span>
-        <span></span>
+        <div>To-Do Item</div>
+        <div>Priority</div>
+        <div>Date Added</div>
+        <div>Completed</div>
+        <div></div>
     </div>
     <div id="todo_items">
 
